@@ -1,0 +1,335 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    touch-action: none;
+}
+
+/* Dynamic Island Simulation */
+.dynamic-island {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #000;
+    border-radius: 19px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+.dynamic-island.expanded {
+    width: 200px;
+    height: 60px;
+    border-radius: 30px;
+}
+
+.island-content {
+    color: white;
+    font-size: 24px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Safe area for iPhone notch */
+@supports (padding-top: env(safe-area-inset-top)) {
+    .dynamic-island {
+        top: calc(env(safe-area-inset-top) + 10px);
+    }
+}
+
+/* Game Container */
+.game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    padding-top: 80px;
+}
+
+/* Score Panel */
+.score-panel {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 100;
+}
+
+.score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.score-value {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* Game Area */
+.game-area {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 200px);
+    overflow: hidden;
+}
+
+/* Falling Items */
+.falling-item {
+    position: absolute;
+    font-size: 40px;
+    cursor: pointer;
+    user-select: none;
+    animation: fall linear forwards;
+    z-index: 10;
+}
+
+@keyframes fall {
+    from {
+        transform: translateY(0) rotate(0deg);
+    }
+    to {
+        transform: translateY(calc(100vh - 100px)) rotate(360deg);
+    }
+}
+
+/* Player Basket */
+.basket {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 60px;
+    user-select: none;
+    cursor: grab;
+    z-index: 50;
+    transition: transform 0.1s ease-out;
+}
+
+.basket:active {
+    cursor: grabbing;
+}
+
+/* Start Screen */
+.start-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+}
+
+.start-screen h1 {
+    color: white;
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.start-screen p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 30px;
+    max-width: 400px;
+}
+
+.instructions {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.instructions p {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
+.start-button, .restart-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.start-button:active, .restart-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.tip {
+    margin-top: 20px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+}
+
+/* Game Over Screen */
+.game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.game-over-screen h1 {
+    color: #ff6b6b;
+    font-size: 56px;
+    margin-bottom: 20px;
+    animation: gameOverPulse 1s infinite;
+}
+
+@keyframes gameOverPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.final-score {
+    color: white;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.final-score span {
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Particle Effects */
+.particle {
+    position: absolute;
+    pointer-events: none;
+    font-size: 24px;
+    animation: particleFade 1s forwards;
+    z-index: 1000;
+}
+
+@keyframes particleFade {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.5);
+    }
+}
+
+/* Catch Effect */
+.catch-effect {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border: 3px solid #4ecdc4;
+    border-radius: 50%;
+    animation: catchRipple 0.6s forwards;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+@keyframes catchRipple {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .start-screen h1 {
+        font-size: 36px;
+    }
+
+    .start-screen p {
+        font-size: 16px;
+    }
+
+    .instructions p {
+        font-size: 18px;
+    }
+
+    .basket {
+        font-size: 50px;
+    }
+
+    .falling-item {
+        font-size: 35px;
+    }
+}
+
+/* iPhone 14 Pro and later specific styles */
+@media only screen
+    and (device-width: 393px)
+    and (device-height: 852px)
+    and (-webkit-device-pixel-ratio: 3) {
+    .dynamic-island {
+        /* Exact dimensions for iPhone 14 Pro Dynamic Island */
+        width: 126px;
+        height: 37px;
+    }
+}
